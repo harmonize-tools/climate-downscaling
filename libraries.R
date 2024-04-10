@@ -10,6 +10,16 @@ install.and.load <- function(packagename){
 install.and.load('startR')
 install.and.load('s2dv')
 install.and.load('CSTools')
+install.and.load('easyVerification')
+install.and.load('multiApply')
+install.and.load('ClimProjDiags')
+install.and.load('plyr')
+install.and.load('nnet')
+install.and.load('FNN')
+install.and.load('ncdf4')
+install.and.load('ecmwfr')
+install.and.load('devtools')
+install.and.load('lubridate')
 
 # source public code (not available as a package):
 source("https://earth.bsc.es/gitlab/es/csdownscale/-/raw/master/R/Analogs.R")
