@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - cdo==1.9.8
