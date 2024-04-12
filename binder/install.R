@@ -1,1 +1,1 @@
-install.packages(c('startR', 's2dv', 'CSTools', 'easyVerification', 'multiApply', 'ClimProjDiags', 'plyr', 'nnet', 'FNN', 'ncdf4', 'ecmwfr', 'devtools', 'lubridate'))
+install.packages(c('ncdf4', 'plyr', 'nnet', 'FNN', 'ecmwfr', 'devtools', 'lubridate', 'startR', 's2dv', 'CSTools', 'easyVerification', 'multiApply', 'ClimProjDiags'))
