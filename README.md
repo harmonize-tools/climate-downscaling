@@ -1,5 +1,7 @@
 # Downscaling of Climate Data
-Tutorial to use [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale) applied to [HARMONIZE project](https://www.harmonize-tools.org/) hotspots ![HARMONIZE](images/harmonize_logo.png) ![BSC](images/bsc_logo.png)
+Tutorial to use [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale) applied to [HARMONIZE project](https://www.harmonize-tools.org/) hotspots 
+
+<img src="images/harmonize_logo.png" alt="HARMONIZE" height="150"/> <img src="images/bsc_logo.png" alt="HARMONIZE" height="150"/>
 
 Click the following icon to run the tutorial with binder *(note that the binder session can take some time to load, about 15 to 30min, thank you for your patience)*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
 
