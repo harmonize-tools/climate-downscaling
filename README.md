@@ -1,11 +1,11 @@
 # Downscaling of Climate Data
-Tutorial to use [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale) applied to [HARMONIZE project](https://www.harmonize-tools.org/) hotspots 
+Tutorial to spatially downscale climate data in the hotspots of the [HARMONIZE project](https://www.harmonize-tools.org/)
 
-<img src="images/harmonize_logo.png" height="150"/> <img src="images/bsc_logo.png" height="150"/>
+<!-- <img src="images/harmonize_logo.png" height="70"/> <img src="images/bsc_logo.png" height="70"/> -->
 
 Click the following icon to run the tutorial with binder *(note that the binder session can take some time to load, about 15 to 30min, thank you for your patience)*: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
 
-<img src="images/csdownscale_logo.png" width="150"/>
+<img src="images/csdownscale_logo.png" width="200"/> [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale)
 
 Downscaling allows for transferring climate information from coarse to fine grids. In this way, seasonal predictions, which are usually delivered in coarse grids, can be output refined to improve their value. It is worth noting that downscaling does not necessarily increase the overall skill (quality) of seasonal forecasts. Instead, it provides a more detailed spatial field of climate variables like temperature, precipitation or surface winds. A wide variety of downscaling methods do exist. Some statistical methods have been coded and included in the CSDownscale R package.
 
