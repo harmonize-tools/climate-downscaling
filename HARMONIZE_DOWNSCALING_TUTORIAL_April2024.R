@@ -1,49 +1,37 @@
-#setwd("")
+# climate variable (the same code is need as variable name of the netcdf file and in the file name)
+  var_name = 't2m' # 2m temperature
+ 
+# reference period, forecast issue date and leadtimes
+  reference_period <- c(1996:2015)
+  forecast_issue_date <- '2024-04'
+  leadtimes <- indices(1:3)
 
-# variable selection 
-  var_name = 't2m' 
+# configuration of sdate_hcst (array containing the initialisation dates of the reference period)
+  sdate_hcst <- paste0(reference_period, substr(forecast_issue_date,6,7))
 
-# variable configuration (although this is repeated in download_seasonal_data.R)
-  switch (tolower(var_name),
-          "t2m"    = {var_longname <- '2m_temperature'},
-          "tp"   = {var_longname <- 'total_precipitation'},
-          "ssr"    = {var_longname <- 'surface_net_solar_radiation'},
-          "msl"   = {var_longname <- 'mean_sea_level_pressure'})
-  
-# Selection of reference period, smonth (ini) and leadtimes (forecast_time)
-  years <- 1996
-  ini = '04'
-  forecast_time <- indices(1:3)  
-
-# configuration of sdate_forecast (array containing the initialisation dates)
-  sdate_forecast <- paste0(years,ini)  
-  
-# Selection of the region boundaries
+# configuration of sdate_fcst (array containing the initialisation dates of the forecast)
+  sdate_hcst <- paste0(substr(forecast_issue_date,1,4), substr(forecast_issue_date,6,7))
+                           
+# SELECTION of the region boundaries; the sample data is prepared for reginos inside lons (-85, -25) and lats (-15, 25)     
   lons.min <- -40       
   lons.max <- -32     
   lats.min <- -11   
   lats.max <- -3   
 
-# path where the data will be stored SHOULD NOT BE CHANGED
+# path where to find the sample data
   exp_path <- paste0('./sample_data/ecmwf51/$var$_$sdate$01.nc')  
   obs_path <- paste0('./sample_data/era5land/$var$_$date$.nc')  
   
-# 4. Load and prepare seasonal data
+# Load and prepare hindcast data (seasonal prediction in the reference period)
   exp <- startR::Start(
-    # Select the path of the forecast
     dat = exp_path,
-    # Variable of interest
     var = var_name,
-    # Start dates, years that we are using to calibrate the hindcast with reanalysis
-    sdate = sdate_forecast,
-    # Select all ensemble members
+    sdate = sdate_hcst,
     ensemble = 'all',
-    # Forecast time
-    time = forecast_time,
+    time = leadtimes,
     latitude = values(list(lats.min, lats.max)),
     latitude_reorder = Sort(decreasing = T),
     longitude = values(list(lons.min, lons.max)),
-    # Reorder longitude points from [0,360] to [-180, 180]
     longitude_reorder = CircularSort(-180,180),
     synonims = list(latitude = c('lat', 'latitude'),
                     longitude = c('lon', 'longitude'),
@@ -53,6 +41,9 @@
                        time = 'sdate'),
     retrieve = TRUE)
 
+# extract dates and coordinates
+
+# Load Obs
   # Here, the dates that will be used to retrieve the reanalysis are obtained.
   # They will be the same as the hindcast times.
   dates <- attr(exp, 'Variables')$common$time
@@ -88,8 +79,13 @@
   clim_obs <- MeanDims(obs, dims = c('sdate'), na.rm = TRUE)
   exp_anom <- Ano(data = exp, clim = clim_exp)
   obs_anom <- Ano(data = obs, clim = clim_obs)
-  
-  downscaled_hcst <- Intbc(exp = exp_anom, exp_lats = exp_lats, exp_lons = exp_lons,
+# visualize Climatology (3-month avg, ensemble mean) of exp data and obs data and their resolutions
+
+# Load forecast (3 months)
+# visualize 
+
+# downscale hindcast and assess quality
+ downscaled_hcst <- Intbc(exp = exp_anom, exp_lats = exp_lats, exp_lons = exp_lons,
                            obs = obs_anom, obs_lats = obs_lats, obs_lons = obs_lons,            
                            target_grid = 'r3600x1801', 
                            int_method = 'dis', 
@@ -99,3 +95,9 @@
                            lon_dim = 'longitude', 
                            sdate_dim = 'sdate', 
                            ncores = 1)
+
+# Visualize metric quality assessment
+# select final metric
+
+# downscale forecast (3 months)
+# Visualize raw forecast vs calibrated downscaled forecast
