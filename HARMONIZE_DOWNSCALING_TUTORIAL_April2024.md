@@ -165,9 +165,12 @@ Run the following lines of code after modifying them if you want to select a dif
              nrow = 1,
              units = paste0(attr(hcst, "Variables")$common[[2]]$long_name, ' (', attr(hcst, "Variables")$common[[2]]$units, ')'),
              toptitle = paste0(region.name, ' hindcast climatology (', reference_period[1], '-',  reference_period[length(reference_period)], ')'),
+             title_scale = 0.7,
+             width = 10,
+             height = 5,
              fileout = './plot1_hindcast_climatology.png'
  )
-  PlotLayout(fun = PlotEquiMap, 
+ PlotLayout(fun = PlotEquiMap, 
              plot_dims = c('longitude', 'latitude'),
              var = ArrayToList(obs.clim, 'time', names=''),
              lon = lons_obs,
@@ -178,6 +181,9 @@ Run the following lines of code after modifying them if you want to select a dif
              nrow = 1,
              units = paste0(attr(obs, "Variables")$common[[2]]$long_name, ' (', attr(obs, "Variables")$common[[2]]$units, ')'),
              toptitle = paste0(region.name, ' observations climatology (', reference_period[1], '-',  reference_period[length(reference_period)], ')'),
+             title_scale = 0.7,
+             width = 10,
+             height = 5,
              fileout = './plot1_reanalysis_climatology.png'
   )
 ```
