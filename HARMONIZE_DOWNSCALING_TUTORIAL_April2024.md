@@ -284,8 +284,8 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  PlotLayout(fun = PlotEquiMap,
             plot_dims = c('longitude', 'latitude'),
             var = ArrayToList(downscaled_fcst_ensemble_mean, 'time', names=''),
-            lon = obs_lons, # because we have downscaled the forecast to the obs grid
-            lat = obs_lats, # because we have downscaled the forecast to the obs grid
+            lon = lons_obs, # because we have downscaled the forecast to the obs grid
+            lat = lats_obs, # because we have downscaled the forecast to the obs grid
             filled.continents = FALSE,
             colNA = 'black',
             ncol = length(leadtimes),
@@ -299,6 +299,10 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
             fileout = './plot4_forecast_downscaled.png'
  )
 ```
+
+<img src="sample_visualisations/plot3_forecast_raw.png">
+
+<img src="sample_visualisations/plot4_forecast_downscaled.png">
 
 # Step 6: Quality assessment
 Run again the selected option for the downscaling of the forecast but this time to downscale the hindcast (and be able to assess the quality of the final product by comparing with past reference). Use the exact same option as before with the difference of selecting *hcst* instead of *fcst* and set the parameter ```exp_cor = NULL```
@@ -348,15 +352,15 @@ The CRPSS (Continuous Ranked Probability Skill Score) is typically used to evalu
 The BSS10 and BSS90 (Brier Skill Score of the 10th and 90th percentile respectively) are used to evaluate the tails of the probability distribution (extremes). Positive values (up to 1) of BSS10 indicate that the seasonal prediction system is able to predict the abnormally low mean temperatures (or whichever is the variable), whereas positive values (up to 1) of BSS90 depicts skill in predicting abnormally high mean temperatures. As in the above skill score, the reference forecast used is the climatological forecast. The climatological forecast assigns, by definition, a probability of 0.1 to mean temperatures occurring below the 10th percentile of the climatological distribution, and the same probability for temperatures occurring above the 90th percentile of the same distribution.
 
 ```
- crpss <- veriApply('EnsCrpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
-                   tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
-                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]]
- bss10 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
-                   prob = 1/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
-                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
- bss90 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
-                   prob = 9/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
-                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
+ crpss <- veriApply('EnsCrpss', fcst = downscaled_field$data, obs = downscaled_field$obs,
+                   tdim = which(names(dim(downscaled_field$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_field$data)) == 'ensemble'), na.rm = TRUE)[[1]]
+ bss10 <- veriApply('EnsRpss', fcst = downscaled_field$data, obs = downscaled_field$obs,
+                   prob = 1/10, tdim = which(names(dim(downscaled_field$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_field$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
+ bss90 <- veriApply('EnsRpss', fcst = downscaled_field$data, obs = downscaled_field$obs,
+                   prob = 9/10, tdim = which(names(dim(downscaled_field$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_field$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
 
  PlotLayout(fun = PlotEquiMap, 
     plot_dims = c('longitude', 'latitude'),
@@ -376,3 +380,5 @@ The BSS10 and BSS90 (Brier Skill Score of the 10th and 90th percentile respectiv
     fileout = './plot5_skill_assessment.png'
  )
 ```
+
+<img src="sample_visualisations/plot5_skill_assessment.png">
