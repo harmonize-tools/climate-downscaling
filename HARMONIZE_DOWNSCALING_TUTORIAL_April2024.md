@@ -17,7 +17,7 @@ Run the following lines of code to create the necessary parameters:
   sdate_hcst <- paste0(reference_period, substr(forecast_issue_date,6,7))
 
 # configuration of sdate_fcst (array containing the initialisation dates of the forecast)
-  sdate_hcst <- paste0(substr(forecast_issue_date,1,4), substr(forecast_issue_date,6,7))
+  sdate_fcst <- paste0(substr(forecast_issue_date,1,4), substr(forecast_issue_date,6,7))
 
 # path where to find the sample data
   exp_path <- paste0('./sample_data/ecmwf51/$var$_$sdate$01.nc')  
