@@ -8,26 +8,31 @@
 
 ```
 # Dominican Republic
+    region.name <- 'Dominican Republic'
     lons.min <- -73    
     lons.max <- -67     
     lats.min <- 16   
     lats.max <- 22   
 # Cajamarca (Colombia)
+    region.name <- 'Cajamarca (Colombia)'
     lons.min <- -78    
     lons.max <- -72  
     lats.min <- 1.5   
     lats.max <- 7.5   
 # Iquitos (Peru)
+    region.name <- 'Iquitos (Peru)'
     lons.min <- -76    
     lons.max <- -70     
     lats.min <- -7   
     lats.max <- -1   
 # Cametá (Brazil)
+    region.name <- 'Cametá (Brazil)'
     lons.min <- -52    
     lons.max <- -46     
     lats.min <- -5   
     lats.max <- 1   
 # Campina Grande (Brazil)
+    region.name <- 'Campina Grande (Brazil)'
     lons.min <- -39    
     lons.max <- -33     
     lats.min <- -10   
