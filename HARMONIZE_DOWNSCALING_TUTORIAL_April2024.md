@@ -206,7 +206,7 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #   Does not rely on any data for training.
  
  # SELECTION: method_remap
- downscaled_int <- Interpolation(exp = fcst, lats = lats_hcst, lons = lons_hcst,
+ downscaled_field <- Interpolation(exp = fcst, lats = lats_hcst, lons = lons_hcst,
                                  method_remap = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
                                  target_grid = obs_gridref, 
                                  lat_dim = "latitude", lon_dim = "longitude", region = NULL, 
@@ -219,7 +219,7 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #    Later, a bias adjustment of the interpolated values is performed. Bias adjustment techniques include simple bias correction, 
  #    calibration or quantile mapping.
 
- downscaled_intbc <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
+ downscaled_field <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
                                  exp_lats = lats_hcst, exp_lons = lons_hcst,
                                  obs_lats = lats_obs, obs_lons = lons_obs,            
                                  target_grid = obs_gridref,
@@ -242,11 +242,11 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #   The linear regression model is then built using the principal components that explain 95% of the variance. 
  #   The '9nn' method does not require a pre-interpolation process.     
 
- downscaled_intlr.basic <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
+ downscaled_field <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
                                  exp_lats = lats_hcst, exp_lons = lons_hcst, 
                                  obs_lats = lats_obs, obs_lons = lons_obs, 
                                  int_method = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
-                                 lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn' but only 
+                                 lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn'; recommended for the tutorial: 'basic' 
                                  predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
                                  target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
                                  lat_dim = 'latitude', lon_dim = 'longitude', 
@@ -255,8 +255,69 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
                                  loocv = TRUE, ncores = 7)
 ```
 
-# Visualize metric quality assessment
-# select final metric
+# Step 5: visualize raw forecast vs calibrated downscaled forecast
+```
+ # create new object with downscaled forecast data to overwrite the downscaled_field object later in the quality assessment step:
+ downscaled_fcst <- downscaled_field$data
+ # calculate ensemble mean for the visualisation:
+ downscaled_fcst_ensemble_mean <- MeanDims(downscaled_fcst, dim = 'ensemble', na.rm = TRUE)
+ raw_fcst_ensemble_mean <- MeanDims(fcst, dim = 'ensemble', na.rm = TRUE)
+
+ # Plot raw forecast:
+ PlotLayout(fun = PlotEquiMap, 
+             plot_dims = c('longitude', 'latitude'),
+             var = ArrayToList(raw_fcst_ensemble_mean, 'time', names=''),
+             lon = lons_fcst,
+             lat = lats_fcst,
+             filled.continents = FALSE,
+             colNA = 'black',
+             ncol = length(leadtimes),
+             col_titles = paste0(c(month(as.integer(substr(forecast_issue_date,6,7))+leadtimes-1, label = TRUE, abbr = FALSE)), substr(forecast_issue_date, 1, 4)),
+             nrow = 1,
+             units = paste0(attr(fcst, "Variables")$common[[2]]$long_name, ' (', attr(fcst, "Variables")$common[[2]]$units, ')'),
+             toptitle = paste0(region.name, ' forecast ', forecast_issue_date),
+             title_scale = 0.7,
+             width = 10,
+             height = 5,
+             fileout = './plot3_forecast_raw.png'
+  )
+ PlotLayout(fun = PlotEquiMap,
+            var = ArrayToList(downscaled_fcst_ensemble_mean, 'time', names=''),
+            lon = obs_lons, # because we have downscaled the forecast to the obs grid
+            lat = obs_lats, # because we have downscaled the forecast to the obs grid
+            colNA = 'black',
+            filled.continents = FALSE,
+            ncol = 3
+```
+
+# Step 6: Quality assessment
+Run again the selected option for the downscaling of the forecast but this time
+ crpss <- veriApply('EnsCrpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
+                   tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
+        bss10 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
+                   prob = 1/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
+        bss90 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
+                   prob = 9/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
+                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
+
+        PlotLayout(fun = PlotEquiMap, 
+           plot_dims = c('longitude', 'latitude'),
+           var = append(append(ArrayToList(crpss, 'time', names=''), ArrayToList(bss10, 'time', names='')), ArrayToList(bss90, 'time', names='')),
+           layout_by_rows = FALSE,
+           colNA = 'black',
+           brks = seq(0,1,0.1),
+           col_inf = 'grey',
+           cols = c('#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b', '#00441b'),
+           lon = lons_obs,
+           lat = lats_obs,
+           filled.continents = FALSE, 
+           nrow = length(leadtimes),
+           row_titles = paste0('leadtime: ', leadtimes),
+           ncol = 3,
+           col_titles = c('CRPSS', 'BSS10', 'BSS90'),
+           fileout = 'Skill_assessment.png')
+
 
 # downscale forecast (3 months)
-# Visualize raw forecast vs calibrated downscaled forecast
