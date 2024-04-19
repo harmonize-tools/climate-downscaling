@@ -30,6 +30,7 @@ The sample data is prepared for reginos inside lons (-85, -25) and lats (-15, 25
 Run the following lines of code after modifying them if you want to select a different region:
 
 ```
+  region.name <- 'Cajamarca (Colombia)'
   lons.min <- -78    
   lons.max <- -72  
   lats.min <- 1.5   
@@ -72,8 +73,8 @@ Run the following lines of code after modifying them if you want to select a dif
 ```
   # Here, the dates of the previously loaded hindcast will be used
   # to retrieve the reanalysis. They will be the same as the hindcast times.
-  dates_file <- format(dates_hcst, '%Y%m') #Giving dates format
-  dim(dates_file) <- c(sdate = length(sdate_hcst), time = length(leadtimes))#Specifying the dimensions 
+  dates_file <- format(dates_hcst, '%Y%m') # Giving dates format
+  dim(dates_file) <- c(sdate = length(sdate_hcst), time = length(leadtimes)) # Specifying the dimensions 
   
   obs <- Start(# load observational (reanalysis) data
       dat = obs_path,
@@ -150,7 +151,36 @@ Run the following lines of code after modifying them if you want to select a dif
   fcst.season_av <- MeanDims(fcst, dim = 'time', na.rm = TRUE)
 ```
 
-# Step 3: Create visualise some plots of the loaded raw data
+# Step 3: Create some plots to visualise the loaded raw data
+## Plot the climatology of the raw past predictions in comparison to the observations
+```
+ PlotLayout(fun = PlotEquiMap, 
+             plot_dims = c('longitude', 'latitude'),
+             var = ArrayToList(hcst.clim, 'time', names=''),
+             lon = lons_hcst,
+             lat = lats_hcst,
+             filled.continents = FALSE, 
+             ncol = length(leadtimes),
+             col_titles = paste0('forecast month: ', c(month(as.integer(substr(forecast_issue_date,6,7))+leadtimes-1, label = TRUE, abbr = FALSE))),
+             nrow = 1,
+             units = paste0(attr(hcst, "Variables")$common[[2]]$long_name, ' (', attr(hcst, "Variables")$common[[2]]$units, ')'),
+             toptitle = paste0(region.name, ' hindcast climatology (', reference_period[1], '-',  reference_period[length(reference_period)], ')'),
+             fileout = './plot1_hindcast_climatology.png'
+ )
+  PlotLayout(fun = PlotEquiMap, 
+             plot_dims = c('longitude', 'latitude'),
+             var = ArrayToList(obs.clim, 'time', names=''),
+             lon = lons_obs,
+             lat = lats_obs,
+             filled.continents = FALSE, 
+             ncol = length(leadtimes),
+             col_titles = paste0('forecast month: ', c(month(as.integer(substr(forecast_issue_date,6,7))+leadtimes-1, label = TRUE, abbr = FALSE))),
+             nrow = 1,
+             units = paste0(attr(obs, "Variables")$common[[2]]$long_name, ' (', attr(obs, "Variables")$common[[2]]$units, ')'),
+             toptitle = paste0(region.name, ' observations climatology (', reference_period[1], '-',  reference_period[length(reference_period)], ')'),
+             fileout = './plot1_reanalysis_climatology.png'
+  )
+```
 
 # Visualize metric quality assessment
 # select final metric
