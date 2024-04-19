@@ -22,6 +22,7 @@ Run the following lines of code to create the necessary parameters:
 # path where to find the sample data
   exp_path <- paste0('./sample_data/ecmwf51/$var$_$sdate$01.nc')  
   obs_path <- paste0('./sample_data/era5land/$var$_$date$.nc')
+  obs_gridref <- paste0('./sample_data/era5land/', var_name, '_', reference_period[1], substr(forecast_issue_date,6,7), '.nc')  
 ```
                            
 # Step 3: SELECTION of the region boundaries
@@ -186,13 +187,73 @@ Run the following lines of code after modifying them if you want to select a dif
              title_scale = 0.7,
              width = 10,
              height = 5,
-             fileout = './plot1_reanalysis_climatology.png'
+             fileout = './plot2_reanalysis_climatology.png'
   )
 ```
 
 <img src="sample_visualisations/plot1_hindcast_climatology.png">
 
-<img src="sample_visualisations/plot1_reanalysis_climatology.png">
+<img src="sample_visualisations/plot2_reanalysis_climatology.png">
+
+# Setp 4: SELECTION of the downscaling method
+Several methods of downscaling are available from [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale). Select one of the 3 options of code blocks below and modify the indicated parameters to select the interpolation method and/or the bias adjustment or linear regression method.
+
+## Option 1: interpolation
+```
+ # Interpolation : Included in Interpolation(). Regrid of a coarse-scale grid into a fine-scale grid, 
+ #   or interpolate model data into a point location. Different interpolation methods, 
+ #   based on different mathematical approaches, can be applied: conservative, nearest neighbour, bilinear or bicubic. 
+ #   Does not rely on any data for training.
+ 
+ # SELECTION: method_remap
+ downscaled_int <- Interpolation(exp = fcst, lats = lats_hcst, lons = lons_hcst,
+                                 method_remap = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+                                 target_grid = obs_gridref, 
+                                 lat_dim = "latitude", lon_dim = "longitude", region = NULL, 
+                                 ncores = 7)
+```
+
+## Option 2: interpolation and bias adjustment
+```
+ # Interpolation plus bias adjustment : Included in Intbc(). interpolate model data into a fine-scale grid or point location. 
+ #    Later, a bias adjustment of the interpolated values is performed. Bias adjustment techniques include simple bias correction, 
+ #    calibration or quantile mapping.
+
+ downscaled_intbc <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
+                                 exp_lats = lats_hcst, exp_lons = lons_hcst,
+                                 obs_lats = lats_obs, obs_lons = lons_obs,            
+                                 target_grid = obs_gridref,
+                                 int_method = 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+                                 bc_method = 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
+                                 lat_dim = 'latitude', lon_dim = 'longitude', 
+                                 member_dim = 'ensemble',
+                                 sdate_dim = 'sdate', 
+                                 ncores = 7)
+```
+
+## Option 3: interpolation and linear regression
+```
+ # Interpolation plus linear regression : Included in Intlr(..., method = 'basic'). Firstly, model data is interpolated into
+ #   a fine-scale grid or point location. Later, a linear-regression with the interpolated values is fitted using
+ #   high-res observations as predictands, and then applied with model data to correct the interpolated values.
+ #   Stencil : Included in Intlr(..., method = '9nn'). A linear-regression with the nine nearest neighbours is fitted using 
+ #   high-res observations as predictands. Instead of constructing a regression model using all the nine predictors, 
+ #   principal component analysis is applied to the data of neighbouring grids to reduce the dimension of the predictors. 
+ #   The linear regression model is then built using the principal components that explain 95% of the variance. 
+ #   The '9nn' method does not require a pre-interpolation process.     
+
+ downscaled_intlr.basic <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
+                                 exp_lats = lats_hcst, exp_lons = lons_hcst, 
+                                 obs_lats = lats_obs, obs_lons = lons_obs, 
+                                 int_method = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
+                                 lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn' but only 
+                                 predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
+                                 target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
+                                 lat_dim = 'latitude', lon_dim = 'longitude', 
+                                 member_dim = 'ensemble',
+                                 sdate_dim = 'sdate', time_dim = 'time', 
+                                 loocv = TRUE, ncores = 7)
+```
 
 # Visualize metric quality assessment
 # select final metric
