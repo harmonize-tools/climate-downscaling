@@ -188,6 +188,10 @@ Run the following lines of code after modifying them if you want to select a dif
   )
 ```
 
+<img src="sample_visualisations/plot1_hindcast_climatology.png">
+
+<img src="sample_visualisations/plot1_reanalysis_climatology.png">
+
 # Visualize metric quality assessment
 # select final metric
 
