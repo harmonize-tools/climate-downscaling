@@ -305,7 +305,7 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
 <img src="sample_visualisations/plot4_forecast_downscaled.png">
 
 # Step 6: Quality assessment
-Run again the selected option for the downscaling of the forecast but this time to downscale the hindcast (and be able to assess the quality of the final product by comparing with past reference). Use the exact same option as before with the difference of selecting *hcst* instead of *fcst* and set the parameter ```exp_cor = NULL```
+Run again the selected option for the downscaling of the forecast but this time to downscale the hindcast (and be able to assess the quality of the final product by comparing with past reference). Use the exact same option as before with the difference of selecting ```hcst``` instead of ```fcst``` and setting the parameter ```exp_cor = NULL```
 
 ## Option 1: interpolation
 ```
