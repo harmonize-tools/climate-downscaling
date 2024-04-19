@@ -275,49 +275,104 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
              col_titles = paste0(c(month(as.integer(substr(forecast_issue_date,6,7))+leadtimes-1, label = TRUE, abbr = FALSE)), substr(forecast_issue_date, 1, 4)),
              nrow = 1,
              units = paste0(attr(fcst, "Variables")$common[[2]]$long_name, ' (', attr(fcst, "Variables")$common[[2]]$units, ')'),
-             toptitle = paste0(region.name, ' forecast ', forecast_issue_date),
+             toptitle = paste0(region.name, ' raw forecast ', forecast_issue_date),
              title_scale = 0.7,
              width = 10,
              height = 5,
              fileout = './plot3_forecast_raw.png'
   )
  PlotLayout(fun = PlotEquiMap,
+            plot_dims = c('longitude', 'latitude'),
             var = ArrayToList(downscaled_fcst_ensemble_mean, 'time', names=''),
             lon = obs_lons, # because we have downscaled the forecast to the obs grid
             lat = obs_lats, # because we have downscaled the forecast to the obs grid
-            colNA = 'black',
             filled.continents = FALSE,
-            ncol = 3
+            colNA = 'black',
+            ncol = length(leadtimes),
+            col_titles = paste0(c(month(as.integer(substr(forecast_issue_date,6,7))+leadtimes-1, label = TRUE, abbr = FALSE)), substr(forecast_issue_date, 1, 4)),
+            nrow = 1,
+            units = paste0(attr(fcst, "Variables")$common[[2]]$long_name, ' (', attr(fcst, "Variables")$common[[2]]$units, ')'),
+            toptitle = paste0(region.name, ' post-processed forecast ', forecast_issue_date),
+            title_scale = 0.7,
+            width = 10,
+            height = 5,
+            fileout = './plot4_forecast_downscaled.png'
+ )
 ```
 
 # Step 6: Quality assessment
-Run again the selected option for the downscaling of the forecast but this time
+Run again the selected option for the downscaling of the forecast but this time to downscale the hindcast (and be able to assess the quality of the final product by comparing with past reference). Use the exact same option as before with the difference of selecting *hcst* instead of *fcst* and set the parameter ```exp_cor = NULL```
+
+## Option 1: interpolation
+```
+ downscaled_field <- Interpolation(exp = hcst, lats = lats_hcst, lons = lons_hcst,
+                                 method_remap = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+                                 target_grid = obs_gridref, 
+                                 lat_dim = "latitude", lon_dim = "longitude", region = NULL, 
+                                 ncores = 7)
+```
+
+## Option 2: interpolation and bias adjustment
+```
+ downscaled_field <- Intbc(exp = hcst, obs = obs, exp_cor = NULL, 
+                                 exp_lats = lats_hcst, exp_lons = lons_hcst,
+                                 obs_lats = lats_obs, obs_lons = lons_obs,            
+                                 target_grid = obs_gridref,
+                                 int_method = 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+                                 bc_method = 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
+                                 lat_dim = 'latitude', lon_dim = 'longitude', 
+                                 member_dim = 'ensemble',
+                                 sdate_dim = 'sdate', 
+                                 ncores = 7)
+```
+
+## Option 3: interpolation and linear regression
+```
+ downscaled_field <- Intlr(exp = hcst, obs = obs, exp_cor = NULL, 
+                                 exp_lats = lats_hcst, exp_lons = lons_hcst, 
+                                 obs_lats = lats_obs, obs_lons = lons_obs, 
+                                 int_method = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
+                                 lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn'; recommended for the tutorial: 'basic' 
+                                 predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
+                                 target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
+                                 lat_dim = 'latitude', lon_dim = 'longitude', 
+                                 member_dim = 'ensemble',
+                                 sdate_dim = 'sdate', time_dim = 'time', 
+                                 loocv = TRUE, ncores = 7)
+```
+
+## Continue by calculating different metrics to assess the quality of the predictions
+
+The CRPSS (Continuous Ranked Probability Skill Score) is typically used to evaluate the entire continuous probability distribution. It compares the probabilistic prediction against a reference prediction (climatological forecast). A positive CRPSS (up to 1) indicates that the prediction is better (in terms of predicting the whole distribution) than the reference hindcast, while a negative CRPSS indicates that the prediction is worse (in terms of predicting the whole distribution) than the reference hindcast.
+
+The BSS10 and BSS90 (Brier Skill Score of the 10th and 90th percentile respectively) are used to evaluate the tails of the probability distribution (extremes). Positive values (up to 1) of BSS10 indicate that the seasonal prediction system is able to predict the abnormally low mean temperatures (or whichever is the variable), whereas positive values (up to 1) of BSS90 depicts skill in predicting abnormally high mean temperatures. As in the above skill score, the reference forecast used is the climatological forecast. The climatological forecast assigns, by definition, a probability of 0.1 to mean temperatures occurring below the 10th percentile of the climatological distribution, and the same probability for temperatures occurring above the 90th percentile of the same distribution.
+
+```
  crpss <- veriApply('EnsCrpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
                    tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
-                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
-        bss10 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
+                   ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]]
+ bss10 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
                    prob = 1/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
                    ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
-        bss90 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
+ bss90 <- veriApply('EnsRpss', fcst = downscaled_hcst$data, obs = downscaled_hcst$obs,
                    prob = 9/10, tdim = which(names(dim(downscaled_hcst$data)) == 'sdate'), 
                    ensdim = which(names(dim(downscaled_hcst$data)) == 'ensemble'), na.rm = TRUE)[[1]] 
 
-        PlotLayout(fun = PlotEquiMap, 
-           plot_dims = c('longitude', 'latitude'),
-           var = append(append(ArrayToList(crpss, 'time', names=''), ArrayToList(bss10, 'time', names='')), ArrayToList(bss90, 'time', names='')),
-           layout_by_rows = FALSE,
-           colNA = 'black',
-           brks = seq(0,1,0.1),
-           col_inf = 'grey',
-           cols = c('#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b', '#00441b'),
-           lon = lons_obs,
-           lat = lats_obs,
-           filled.continents = FALSE, 
-           nrow = length(leadtimes),
-           row_titles = paste0('leadtime: ', leadtimes),
-           ncol = 3,
-           col_titles = c('CRPSS', 'BSS10', 'BSS90'),
-           fileout = 'Skill_assessment.png')
-
-
-# downscale forecast (3 months)
+ PlotLayout(fun = PlotEquiMap, 
+    plot_dims = c('longitude', 'latitude'),
+    var = append(append(ArrayToList(crpss, 'time', names=''), ArrayToList(bss10, 'time', names='')), ArrayToList(bss90, 'time', names='')),
+    layout_by_rows = FALSE,
+    colNA = 'black',
+    brks = seq(0,1,0.1),
+    col_inf = 'grey',
+    cols = c('#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b', '#00441b'),
+    lon = lons_obs,
+    lat = lats_obs,
+    filled.continents = FALSE, 
+    nrow = length(leadtimes),
+    row_titles = paste0('leadtime: ', leadtimes),
+    ncol = 3,
+    col_titles = c('CRPSS', 'BSS10', 'BSS90'),
+    fileout = './plot5_skill_assessment.png'
+ )
+```
