@@ -282,8 +282,8 @@
              #fileout = './plot4_forecast_downscaled.png', # optional line to save the plot
              plot_dims = c('longitude', 'latitude'),
              var = ArrayToList(highres_fcst_ensemble_mean, 'time', names=''),
-             lon = lons_obs, # because we have downscaled the forecast to the obs grid
-             lat = lats_obs, # because we have downscaled the forecast to the obs grid
+             lon = downscaled_fcst$lon,
+             lat = downscaled_fcst$lat,
              filled.continents = FALSE,
              colNA = 'black',
              ncol = length(leadtimes),
@@ -302,7 +302,7 @@
 # Use the exact same option as before with the difference of selecting hcst instead of fcst and setting the parameter exp_cor = NULL
 
 ## Option 1: interpolation
-    if (substr(downscaled_fcst$metadata, 8, 8) != 1){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')
+    if (substr(downscaled_fcst$metadata, 8, 8) != 1){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')}
     downscaled_field <- Interpolation(exp = hcst, lats = lats_hcst, lons = lons_hcst,
                                      method_remap = selection_method_remap, # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
                                      target_grid = obs_gridref, 
@@ -311,7 +311,7 @@
     downscaled_field$obs <- obs
 
 ## Option 2: interpolation and bias adjustment
-   if (substr(downscaled_fcst$metadata, 8, 8) != 2){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')
+   if (substr(downscaled_fcst$metadata, 8, 8) != 2){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')}
    downscaled_field <- Intbc(exp = hcst, obs = obs, exp_cor = NULL, 
                                    exp_lats = lats_hcst, exp_lons = lons_hcst,
                                    obs_lats = lats_obs, obs_lons = lons_obs,            
@@ -324,7 +324,7 @@
                                    ncores = 7)
 
 ## Option 3: interpolation and linear regression
-   if (substr(downscaled_fcst$metadata, 8, 8) != 3){print('WARNING: this is NOT the method that was previouly used to calibrate the forecast')
+   if (substr(downscaled_fcst$metadata, 8, 8) != 3){print('WARNING: this is NOT the method that was previouly used to calibrate the forecast')}
    downscaled_field <- Intlr(exp = hcst, obs = obs, exp_cor = NULL, 
                                    exp_lats = lats_hcst, exp_lons = lons_hcst, 
                                    obs_lats = lats_obs, obs_lons = lons_obs, 
