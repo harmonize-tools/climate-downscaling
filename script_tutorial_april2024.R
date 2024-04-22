@@ -1,5 +1,5 @@
 # Step 1: load the necessary libraries 
-  source('./Binder/libraries_binder.R') # if running in a Binder session
+  source('./binder/libraries_binder.R') # if running in a Binder session
   source('https://raw.githubusercontent.com/harmonize-tools/climate-downscaling/main/binder/libraries_local.R') # if running in local
   # For more information, check https://github.com/harmonize-tools/climate-downscaling/blob/main/setup.md
 
