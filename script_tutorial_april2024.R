@@ -279,7 +279,7 @@
  highres_fcst_ensemble_mean <- MeanDims(highres_fcst, dim = 'ensemble', na.rm = TRUE)
  
  PlotLayout(fun = PlotEquiMap,
-             fileout = './plot4_forecast_downscaled.png', # optional line to save the plot
+             #fileout = './plot4_forecast_downscaled.png', # optional line to save the plot
              plot_dims = c('longitude', 'latitude'),
              var = ArrayToList(highres_fcst_ensemble_mean, 'time', names=''),
              lon = lons_obs, # because we have downscaled the forecast to the obs grid
