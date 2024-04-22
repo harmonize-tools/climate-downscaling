@@ -205,8 +205,8 @@
     #    Later, a bias adjustment of the interpolated values is performed. Bias adjustment techniques include simple bias correction, 
     #    calibration or quantile mapping.
    
-    selection_int_method <- 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
-    selection_bc_method <- 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
+    selection_int_method <- 'dis' # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+    selection_bc_method <- 'evmos' # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
                                      
     # perform downscaling with selected parameters
     downscaled_fcst <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
@@ -233,7 +233,7 @@
     #   The linear regression model is then built using the principal components that explain 95% of the variance. 
     #   The '9nn' method does not require a pre-interpolation process.     
    
-    selection_int_method <- 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
+    selection_int_method <- 'con' # Accepted methods are "con", "bil", "bic", "nn", "con2".
    
     # perform downscaling with selected parameters:
     downscaled_fcst <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
@@ -281,7 +281,7 @@
  PlotLayout(fun = PlotEquiMap,
              fileout = './plot4_forecast_downscaled.png', # optional line to save the plot
              plot_dims = c('longitude', 'latitude'),
-             var = ArrayToList(downscaled_fcst_ensemble_mean, 'time', names=''),
+             var = ArrayToList(highres_fcst_ensemble_mean, 'time', names=''),
              lon = lons_obs, # because we have downscaled the forecast to the obs grid
              lat = lats_obs, # because we have downscaled the forecast to the obs grid
              filled.continents = FALSE,
