@@ -196,7 +196,7 @@ Run the following lines of code after modifying them if you want to select a dif
 <img src="sample_visualisations/plot2_reanalysis_climatology.png">
 
 # Setp 6: SELECTION of the downscaling method
-Several methods of downscaling are available from [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale). Select one of the 3 options of code blocks below and modify the indicated parameters to select the interpolation method and/or the bias adjustment or linear regression method.
+Several methods of downscaling are available from [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale). Select **1 of the 3** options of code blocks below and modify the indicated parameters to select the interpolation method and/or the bias adjustment or linear regression method.
 
 ## Option 1: interpolation
 ```
@@ -206,11 +206,17 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #   Does not rely on any data for training.
  
  # SELECTION: method_remap
- downscaled_field <- Interpolation(exp = fcst, lats = lats_hcst, lons = lons_hcst,
-                                 method_remap = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+ selection_method_remap <- 'con' # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+ 
+ # perform dowsncaling with selected parameters
+ downscaled_fcst <- Interpolation(exp = fcst, lats = lats_hcst, lons = lons_hcst,
+                                 method_remap = selection_method_remap, 
                                  target_grid = obs_gridref, 
                                  lat_dim = "latitude", lon_dim = "longitude", region = NULL, 
                                  ncores = 7)
+ 
+ # save metadata
+ downscaled_fcst$metadata <- paste0('option 1 (interpolation) with method_remap ', selection_method_remap)
 ```
 
 ## Option 2: interpolation and bias adjustment
@@ -219,16 +225,23 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #    Later, a bias adjustment of the interpolated values is performed. Bias adjustment techniques include simple bias correction, 
  #    calibration or quantile mapping.
 
- downscaled_field <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
-                                 exp_lats = lats_hcst, exp_lons = lons_hcst,
-                                 obs_lats = lats_obs, obs_lons = lons_obs,            
-                                 target_grid = obs_gridref,
-                                 int_method = 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
-                                 bc_method = 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
-                                 lat_dim = 'latitude', lon_dim = 'longitude', 
-                                 member_dim = 'ensemble',
-                                 sdate_dim = 'sdate', 
-                                 ncores = 7)
+ selection_int_method <- 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+ selection_bc_method <- 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
+                                  
+ # perform downscaling with selected parameters
+ downscaled_fcst <- Intbc(exp = hcst, obs = obs, exp_cor = fcst, 
+                                  exp_lats = lats_hcst, exp_lons = lons_hcst,
+                                  obs_lats = lats_obs, obs_lons = lons_obs,            
+                                  target_grid = obs_gridref,
+                                  int_method = selection_int_method,
+                                  bc_method = selection_bc_method,
+                                  lat_dim = 'latitude', lon_dim = 'longitude', 
+                                  member_dim = 'ensemble',
+                                  sdate_dim = 'sdate', 
+                                  ncores = 7)
+ 
+ # save metadata
+ downscaled_fcst$metadata <- paste0('option 2 (interpolation and bias correction) with int_method ', selection_int_method, ' and bc_method ', selection_bc_method)
 ```
 
 ## Option 3: interpolation and linear regression
@@ -242,17 +255,23 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
  #   The linear regression model is then built using the principal components that explain 95% of the variance. 
  #   The '9nn' method does not require a pre-interpolation process.     
 
- downscaled_field <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
-                                 exp_lats = lats_hcst, exp_lons = lons_hcst, 
-                                 obs_lats = lats_obs, obs_lons = lons_obs, 
-                                 int_method = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
-                                 lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn'; recommended for the tutorial: 'basic' 
-                                 predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
-                                 target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
-                                 lat_dim = 'latitude', lon_dim = 'longitude', 
-                                 member_dim = 'ensemble',
-                                 sdate_dim = 'sdate', time_dim = 'time', 
-                                 loocv = TRUE, ncores = 7)
+ selection_int_method <- 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
+
+ # perform downscaling with selected parameters:
+ downscaled_fcst <- Intlr(exp = hcst, obs = obs, exp_cor = fcst, 
+                                  exp_lats = lats_hcst, exp_lons = lons_hcst, 
+                                  obs_lats = lats_obs, obs_lons = lons_obs, 
+                                  int_method = selection_int_method,
+                                  lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn'; recommended for the tutorial: 'basic' 
+                                  predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
+                                  target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
+                                  lat_dim = 'latitude', lon_dim = 'longitude', 
+                                  member_dim = 'ensemble',
+                                  sdate_dim = 'sdate', time_dim = 'time', 
+                                  loocv = TRUE, ncores = 7)
+
+ # save metadata
+ downscaled_fcst$metadata <- paste0('option 3 (interpolation and linear regression) with int_method ', selection_int_method, ' and basic linear regression')
 ```
 
 # Step 7: visualize raw forecast vs calibrated downscaled forecast
@@ -309,21 +328,24 @@ Run again the selected option for the downscaling of the forecast but this time 
 
 ## Option 1: interpolation
 ```
- downscaled_field <- Interpolation(exp = hcst, lats = lats_hcst, lons = lons_hcst,
-                                 method_remap = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+if (substr(downscaled_fcst$metadata, 8, 8) != 1){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')
+downscaled_field <- Interpolation(exp = hcst, lats = lats_hcst, lons = lons_hcst,
+                                 method_remap = selection_method_remap, # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
                                  target_grid = obs_gridref, 
                                  lat_dim = "latitude", lon_dim = "longitude", region = NULL, 
                                  ncores = 7)
+downscaled_field$obs <- obs
 ```
 
 ## Option 2: interpolation and bias adjustment
 ```
+ if (substr(downscaled_fcst$metadata, 8, 8) != 2){print('WARNING: this is NOT the method that was previously used to calibrate the forecast')
  downscaled_field <- Intbc(exp = hcst, obs = obs, exp_cor = NULL, 
                                  exp_lats = lats_hcst, exp_lons = lons_hcst,
                                  obs_lats = lats_obs, obs_lons = lons_obs,            
                                  target_grid = obs_gridref,
-                                 int_method = 'dis', # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
-                                 bc_method = 'evmos', # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
+                                 int_method = selection_int_method, # Accepted methods are "con", "bil", "bic", "nn", "con2", "dis"
+                                 bc_method = selection_bc_method, # Accepted methods are 'bias', 'evmos','mse_min', 'crps_min', 'rpc-based' and 'quantile_mapping' (but last one only recommended for precipitation)
                                  lat_dim = 'latitude', lon_dim = 'longitude', 
                                  member_dim = 'ensemble',
                                  sdate_dim = 'sdate', 
@@ -332,10 +354,11 @@ Run again the selected option for the downscaling of the forecast but this time 
 
 ## Option 3: interpolation and linear regression
 ```
+ if (substr(downscaled_fcst$metadata, 8, 8) != 3){print('WARNING: this is NOT the method that was previouly used to calibrate the forecast')
  downscaled_field <- Intlr(exp = hcst, obs = obs, exp_cor = NULL, 
                                  exp_lats = lats_hcst, exp_lons = lons_hcst, 
                                  obs_lats = lats_obs, obs_lons = lons_obs, 
-                                 int_method = 'con', # Accepted methods are "con", "bil", "bic", "nn", "con2".
+                                 int_method = selection_int_method, # Accepted methods are "con", "bil", "bic", "nn", "con2".
                                  lr_method = 'basic', # Accepted methods are 'basic', 'large-scale' and '9nn'; recommended for the tutorial: 'basic' 
                                  predictors = NULL, # Only needed if the linear regression method is set to 'large-scale'.
                                  target_grid = obs_gridref, #'./sample_data/era5land/t2m_199604.nc',
