@@ -152,7 +152,7 @@ Run the following lines of code after modifying them if you want to select a dif
   fcst.season_av <- MeanDims(fcst, dim = 'time', na.rm = TRUE)
 ```
 
-# Step 3: Create some plots to visualise the loaded raw data
+# Step 5: Create some plots to visualise the loaded raw data
 ## Plot the climatology of the raw past predictions in comparison to the observations
 ```
  PlotLayout(fun = PlotEquiMap, 
@@ -195,7 +195,7 @@ Run the following lines of code after modifying them if you want to select a dif
 
 <img src="sample_visualisations/plot2_reanalysis_climatology.png">
 
-# Setp 4: SELECTION of the downscaling method
+# Setp 6: SELECTION of the downscaling method
 Several methods of downscaling are available from [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale). Select one of the 3 options of code blocks below and modify the indicated parameters to select the interpolation method and/or the bias adjustment or linear regression method.
 
 ## Option 1: interpolation
@@ -255,7 +255,7 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
                                  loocv = TRUE, ncores = 7)
 ```
 
-# Step 5: visualize raw forecast vs calibrated downscaled forecast
+# Step 7: visualize raw forecast vs calibrated downscaled forecast
 ```
  # create new object with downscaled forecast data to overwrite the downscaled_field object later in the quality assessment step:
  downscaled_fcst <- downscaled_field$data
@@ -304,7 +304,7 @@ Several methods of downscaling are available from [CSDownscale](https://earth.bs
 
 <img src="sample_visualisations/plot4_forecast_downscaled.png">
 
-# Step 6: Quality assessment
+# Step 8: Quality assessment
 Run again the selected option for the downscaling of the forecast but this time to downscale the hindcast (and be able to assess the quality of the final product by comparing with past reference). Use the exact same option as before with the difference of selecting ```hcst``` instead of ```fcst``` and setting the parameter ```exp_cor = NULL```
 
 ## Option 1: interpolation
