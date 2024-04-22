@@ -4,13 +4,16 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
 #### Option 1a:
 * After the session starts the JupyterLab will open, click RStudio under Notebook to follow the tutorial in RStudio (see image below)
+  
   <img src="images/jupyterlab_rstudio.png">
 
 * Open **script_tutorial_april2024.R** by selecting the file from *FILE -> Open File...* and send the commands directly to the console with *CTRL+ENTER*
+  
   <img src="images/openfile.png">
 
 #### Option 2b:
 * After the session starts the JupyterLab will open, double click on **HARMONIZE_DOWNSCALING_TUTORIAL_April2024.md** on the left pannel (see image below) and follow the tutorial by directly modifying and executing the blocks of code.
+  
   <img src="images/jupyterlab_jupyternotebook.png">
   
 ### Option 2 (local): 
