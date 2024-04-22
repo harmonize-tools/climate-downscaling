@@ -3,7 +3,7 @@ Tutorial to spatially downscale climate data in the hotspots of the [HARMONIZE p
 
 <!-- <img src="images/harmonize_logo.png" height="70"/> <img src="images/bsc_logo.png" height="70"/> -->
 
-Click the following icon to run the tutorial with binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
+Click the following icon to run the tutorial with binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD/HARMONIZE_DOWNSCALING_TUTORIAL_April2024.ipynb) 
 
 <img src="images/csdownscale.png" width="40" align = "center"/> [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale)
 
