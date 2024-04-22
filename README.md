@@ -24,7 +24,7 @@ Click the following icon to run the tutorial with binder: [![Binder](https://myb
   <img src="images/openfile.png">
 
 #### Option 2b:
-* After the session starts the JupyterLab will open, double click on **HARMONIZE_DOWNSCALING_TUTORIAL_April2024.md** on the left pannel (see image below) and follow the tutorial by directly modifying and executing the blocks of code.
+* After the session starts the JupyterLab will open, double click on **HARMONIZE_DOWNSCALING_TUTORIAL_April2024.ipynb** on the left pannel (see image below) and follow the tutorial by directly modifying and executing the blocks of code.
   
   <img src="images/jupyterlab_jupyternotebook.png">
   
@@ -495,4 +495,7 @@ The BSS10 and BSS90 (Brier Skill Score of the 10th and 90th percentile respectiv
 
 <img src="sample_visualisations/plot5_skill_assessment.png">
 
-# 
+# Your feedback
+We would appreciate it if you would take a few minutes to fill this short [form](https://forms.gle/2pzn5eDfuCaY1TzU8) and sent us your feedback. Thanks!
+
+<img src="images/formQR.png">
