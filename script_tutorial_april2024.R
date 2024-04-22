@@ -282,8 +282,8 @@
              fileout = './plot4_forecast_downscaled.png', # optional line to save the plot
              plot_dims = c('longitude', 'latitude'),
              var = ArrayToList(highres_fcst_ensemble_mean, 'time', names=''),
-             lon = attr(highres_fcst, "Variables")$dat$longitude,
-             lat = attr(highres_fcst, "Variables")$dat$latitude,
+             lon = lons_obs, # because we have downscaled the forecast to the obs grid
+             lat = lats_obs, # because we have downscaled the forecast to the obs grid
              filled.continents = FALSE,
              colNA = 'black',
              ncol = length(leadtimes),
