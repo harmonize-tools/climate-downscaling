@@ -4,18 +4,12 @@
 
 Tutorial to spatially downscale climate data in the hotspots of the [HARMONIZE project](https://www.harmonize-tools.org/)
 
-<!-- <img src="images/harmonize_logo.png" height="70"/> <img src="images/bsc_logo.png" height="70"/> -->
-
-Click the following icon to run the tutorial with binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
-
-For other options or more information on how to run the tutorial see [setup.md](https://github.com/harmonize-tools/climate-downscaling/blob/main/setup.md)
-
 # Context <img src="images/csdownscale.png" width="40" align = "center"/> [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale)
-Downscaling allows for transferring climate information from coarse to fine grids. In this way, seasonal predictions, which are usually delivered in coarse grids, can be output refined to improve their value. It is worth noting that downscaling does not necessarily increase the overall skill (quality) of seasonal forecasts. Instead, it provides a more detailed spatial field of climate variables like temperature, precipitation or surface winds. A wide variety of downscaling methods do exist. Some statistical methods have been coded and included in the CSDownscale R package.
+Downscaling allows for transferring climate information from coarse to fine grids. In this way, seasonal predictions, which are usually delivered in coarse grids, can be output refined to improve their value. It is worth noting that downscaling does not necessarily increase the overall skill (quality) of seasonal forecasts. Instead, it provides a more detailed spatial field of climate variables like temperature, precipitation or surface winds. A wide variety of downscaling methods do exist. Some statistical methods have been coded and included in the [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale) R package.
 
 # Step 1: getting started on how to follow the tutorial
 ### Option 1 (cloud): 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
+Click the following icon to run the tutorial with binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
 #### Option 1a:
 * After the session starts the JupyterLab will open, click RStudio under Notebook to follow the tutorial in RStudio (see image below)
   
