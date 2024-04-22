@@ -7,6 +7,10 @@ Tutorial to spatially downscale climate data in the hotspots of the [HARMONIZE p
 # Context <img src="images/csdownscale.png" width="40" align = "center"/> [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale)
 Downscaling allows for transferring climate information from coarse to fine grids. In this way, seasonal predictions, which are usually delivered in coarse grids, can be output refined to improve their value. It is worth noting that downscaling does not necessarily increase the overall skill (quality) of seasonal forecasts. Instead, it provides a more detailed spatial field of climate variables like temperature, precipitation or surface winds. A wide variety of downscaling methods do exist. Some statistical methods have been coded and included in the [CSDownscale](https://earth.bsc.es/gitlab/es/csdownscale) R package.
 
+<img src="images/spatial_resolution_cajamarca.png">
+
+The spatial resolution of global seasonal forecasts (black squares in the image above) is usually much lower than the desired spatial resolution for regional applications (e.g. the municipality of Cajamarca in the deparment of Tolima (Colombia) represented in orange in the image). In this tutorial we will increase the spatial resolution of a ECMWF-system5.1 forecast (initial resolution of 1° x 1°) to the spatial resolution of ERA5-Land (0.1° x 0.1°) from a sample dataset openly available from the [Copernicus Climate Data Store](https://cds.climate.copernicus.eu/#!/home).
+
 # Step 1: getting started on how to follow the tutorial
 ### Option 1 (cloud): 
 Click the following icon to run the tutorial with binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/harmonize-tools/climate-downscaling/HEAD) 
