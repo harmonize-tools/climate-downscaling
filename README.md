@@ -29,7 +29,7 @@ Click the following icon to run the tutorial with binder: [![Binder](https://myb
   <img src="images/jupyterlab_jupyternotebook.png">
   
 ### Option 2 (local): 
-* Note that installation of CDO and the netcdf library configuration is requiered
+* Note that installation of CDO and the netcdf library configuration is requiered, check the instructions in [local_setup.md](https://github.com/harmonize-tools/climate-downscaling/blob/main/local_setup.md)
 * Create a working directory and copy there at least the file [script_tutorial_april2024.R](https://github.com/harmonize-tools/climate-downscaling/blob/main/script_tutorial_april2024.R) file and the [sample_data](https://github.com/harmonize-tools/climate-downscaling/tree/main/sample_data) folder and its contents
 * Open R or RStudio and set your working directory (```setwd()```) to the desired directory where you have saved the *sample_data*
 * Load libraries and functions:
