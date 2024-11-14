@@ -91,8 +91,8 @@ The sample data is prepared for reginos inside lons (-85, -25) and lats (-15, 25
     region.name <- 'Cajamarca (Colombia)'
     lons.min <- -78    
     lons.max <- -72  
-    lats.min <- 1.5   
-    lats.max <- 7.5   
+    lats.min <- 1   
+    lats.max <- 8   
 # Iquitos (Peru)
     region.name <- 'Iquitos (Peru)'
     lons.min <- -76    
